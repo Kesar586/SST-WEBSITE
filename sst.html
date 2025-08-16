@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Poverty – Unified Site</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+  <style>
+    /* ============= Reset & Base ============= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      background-color: #f5f5f7;
+      color: #263238;
+      line-height: 1.45;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ============= Top Navigation ============= */
+    .topnav {
+      position: sticky; top: 0; z-index: 1000;
+      background: #111827; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .topnav .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+    }
+    .brand { font-weight: 700; letter-spacing: 0.2px; }
+    .menu { display: flex; gap: 14px; }
+    .menu a { opacity: 0.9; padding: 6px 10px; border-radius: 8px; }
+    .menu a:hover { background: rgba(255,255,255,0.08); opacity: 1; }
+
+    /* ============= Shared Section Layout ============= */
+    section { scroll-margin-top: 64px; }
+    .slide { width: 100%; min-height: 720px; position: relative; overflow: hidden; }
+    .container { display: flex; flex-direction: column; min-height: 720px; padding: 60px 70px; max-width: 1280px; margin: 0 auto; }
+    .header { margin-bottom: 32px; }
+    .title { font-size: 44px; font-weight: 700; margin-bottom: 10px; }
+    .subtitle { font-size: 22px; font-weight: 600; margin-bottom: 26px; opacity: 0.95; }
+
+    /* Reusable cards */
+    .card { background-color: rgba(255, 255, 255, 0.82); border-radius: 12px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .hoverlift { transition: transform .25s ease, box-shadow .25s ease; cursor: pointer; }
+    .hoverlift:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
+    /* ============= SECTION 1 (Global Overview) ============= */
+    #s1 .slide { background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); }
+    #s1 .title { color: #1a237e; font-size: 50px; }
+    #s1 .subtitle { color: #3949ab; font-size: 24px; }
+
+    #s1 .content { display: flex; flex-direction: column; flex-grow: 1; }
+    #s1 .main-section { display: flex; justify-content: space-between; gap: 28px; margin-bottom: 24px; flex-grow: 1; }
+    #s1 .left-panel, #s1 .right-panel { width: 50%; display: flex; flex-direction: column; }
+
+    #s1 .chart-container { height: 300px; }
+    #s1 .info-box { display: flex; align-items: center; margin-top: 18px; }
+    #s1 .info-icon { font-size: 40px; color: #3949ab; margin-right: 16px; }
+    #s1 .info-text { font-size: 18px; }
+
+    #s1 .stat-box .stat-title { font-size: 20px; font-weight: 600; color: #283593; display: flex; align-items: center; gap: 8px; }
+    #s1 .stat-value { font-size: 40px; font-weight: 700; color: #d32f2f; margin: 10px 0; }
+    #s1 .stat-description { font-size: 18px; }
+
+    #s1 .interactive-element { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 14px; }
+    #s1 .interactive-icon { font-size: 24px; color: #3949ab; }
+    #s1 .interactive-text { font-size: 18px; font-weight: 700; }
+    #s1 .interactive-value { font-size: 20px; font-weight: 800; color: #d32f2f; }
+
+    /* ============= SECTION 2 (Asia) ============= */
+    #s2 .slide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+    #s2 .title { color: #1b5e20; font-size: 40px; }
+    #s2 .subtitle { color: #2e7d32; font-size: 24px; }
+
+    #s2 .chart-section { height: 280px; margin-bottom: 28px; }
+    #s2 .regions-grid { display: flex; justify-content: space-between; gap: 24px; flex-grow: 1; }
+    #s2 .region-card { width: 33%; display: flex; flex-direction: column; }
+    #s2 .region-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    #s2 .region-icon { font-size: 28px; color: #2e7d32; }
+    #s2 .region-title { font-size: 22px; font-weight: 700; color: #2e7d32; }
+    #s2 .stat-value { font-size: 40px; font-weight: 800; color: #d32f2f; margin: 8px 0; }
+    #s2 .description { font-size: 18px; margin-bottom: 10px; }
+    #s2 .trend { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 10px; background: rgba(76,175,80,0.1); border-radius: 8px; }
+    #s2 .trend-arrow { font-size: 26px; color: #388e3c; }
+    #s2 .trend-text { font-weight: 700; }
+    #s2 .interactive-element { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px; background: rgba(76,175,80,0.1); border-radius: 8px; cursor: pointer; }
+
+    /* ============= SECTION 3 (Other Regions) ============= */
+    #s3 .slide { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); }
+    #s3 .title { color: #e65100; font-size: 40px; }
+    #s3 .subtitle { color: #ef6c00; font-size: 24px; }
+
+    #s3 .chart-section { height: 280px; margin-bottom: 28px; }
+    #s3 .regions-grid { display: flex; justify-content: space-between; gap: 24px; }
+    #s3 .region-card { width: 33%; display: flex; flex-direction: column; }
+    #s3 .region-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    #s3 .region-icon { font-size: 28px; color: #e65100; }
+    #s3 .region-title { font-size: 22px; font-weight: 700; color: #e65100; }
+    #s3 .year-range { font-size: 16px; color: #757575; margin-bottom: 6px; }
+    #s3 .stat-value { font-size: 40px; font-weight: 800; }
+    #s3 .decrease { color: #388e3c; }
+    #s3 .increase { color: #d32f2f; }
+    #s3 .neutral  { color: #f57c00; }
+    #s3 .description { font-size: 18px; margin-bottom: 10px; }
+    #s3 .trend { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 10px; background: rgba(255,152,0,0.1); border-radius: 8px; }
+
+    /* ============= Footer ============= */
+    footer { text-align: center; padding: 24px 16px; color: #6b7280; }
+
+    /* ============= Responsive ============= */
+    @media (max-width: 1024px) {
+      .container { padding: 40px 24px; }
+      #s1 .main-section { flex-direction: column; }
+      #s1 .left-panel, #s1 .right-panel { width: 100%; }
+      #s2 .regions-grid, #s3 .regions-grid { flex-direction: column; }
+      #s2 .region-card, #s3 .region-card { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="topnav">
+    <div class="wrap">
+      <div class="brand">Global Poverty Dashboard</div>
+      <div class="menu">
+        <a href="#s1">Overview</a>
+        <a href="#s2">Asia</a>
+        <a href="#s3">Other Regions</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =================== SECTION 1 =================== -->
+  <section id="s1">
+    <div class="slide">
+      <div class="container">
+        <div class="header">
+          <div class="title">Global Poverty Standards and Overall Trends</div>
+          <div class="subtitle">$2.15/day Extreme Poverty Standard</div>
+        </div>
+
+        <div class="content">
+          <div class="main-section">
+            <div class="left-panel">
+              <div class="card chart-container">
+                <canvas id="povertyChart1"></canvas>
+              </div>
+              <div class="card info-box">
+                <i class="material-icons info-icon">info</i>
+                <div class="info-text">USD used for international comparisons due to different currencies worldwide</div>
+              </div>
+            </div>
+
+            <div class="right-panel">
+              <div class="card hoverlift stat-box">
+                <div class="stat-title"><i class="material-icons">trending_down</i> Global Poverty Rate (2010)</div>
+                <div class="stat-value">16.27%</div>
+                <div class="stat-description">International organizations use $2.15/day as the extreme poverty threshold</div>
+              </div>
+              <div class="card hoverlift stat-box">
+                <div class="stat-title"><i class="material-icons">trending_down</i> Global Poverty Rate (2019)</div>
+                <div class="stat-value">9.05%</div>
+                <div class="stat-description">Significant decrease in global poverty over the decade</div>
+              </div>
+              <div class="card interactive-element hoverlift" id="decreaseS1">
+                <i class="material-icons interactive-icon">calculate</i>
+                <div class="interactive-text">Poverty Decrease:</div>
+                <div class="interactive-value">7.22%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 2 =================== -->
+  <section id="s2">
+    <div class="slide">
+      <div class="container">
+        <div class="header">
+          <div class="title">Poverty Reduction in Asia</div>
+          <div class="subtitle">Significant Progress Across the Continent</div>
+        </div>
+
+        <div class="content">
+          <div class="chart-section">
+            <div class="card chart-container"><canvas id="povertyChart2"></canvas></div>
+          </div>
+
+          <div class="regions-grid">
+            <div class="card hoverlift region-card">
+              <div class="region-header">
+                <i class="material-icons region-icon">trending_down</i>
+                <div class="region-title">China</div>
+              </div>
+              <div class="stat-value">0.1%</div>
+              <div class="description">Poverty rate by 2020</div>
+              <div class="key-point"><i class="material-icons" style="font-size:22px;color:#43a047;">check_circle</i><span style="margin-left:8px; font-size:18px;">Dramatic reduction</span></div>
+              <div class="interactive-element">
+                <i class="material-icons interactive-icon">info</i>
+                <div class="interactive-text">Economic development</div>
+              </div>
+              <div class="trend"><div class="trend-arrow">↓</div><div class="trend-text">Poverty nearly eliminated</div></div>
+            </div>
+
+            <div class="card hoverlift region-card">
+              <div class="region-header">
+                <i class="material-icons region-icon">business</i>
+                <div class="region-title">Southeast Asia</div>
+              </div>
+              <div class="stat-value">5.4%</div>
+              <div class="description">Average poverty rate 2020</div>
+              <div class="key-point"><i class="material-icons" style="font-size:22px;color:#43a047;">school</i><span style="margin-left:8px; font-size:18px;">Human resource investments</span></div>
+              <div class="interactive-element">
+                <i class="material-icons interactive-icon">trending_down</i>
+                <div class="interactive-text">Economic development</div>
+              </div>
+              <div class="trend"><div class="trend-arrow">↓</div><div class="trend-text">Significant poverty reduction</div></div>
+            </div>
+
+            <div class="card hoverlift region-card">
+              <div class="region-header">
+                <i class="material-icons region-icon">public</i>
+                <div class="region-title">South Asia</div>
+              </div>
+              <div class="stat-value">13% → 11%</div>
+              <div class="description">Poverty rate (2017 to 2021)</div>
+              <div class="key-point"><i class="material-icons" style="font-size:22px;color:#43a047;">people</i><span style="margin-left:8px; font-size:18px;">Population: 233M → 207M</span></div>
+              <div class="interactive-element">
+                <i class="material-icons interactive-icon">calculate</i>
+                <div class="interactive-text">26 million lifted out</div>
+              </div>
+              <div class="trend"><div class="trend-arrow">↓</div><div class="trend-text">2 percentage point decrease</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 3 =================== -->
+  <section id="s3">
+    <div class="slide">
+      <div class="container">
+        <div class="header">
+          <div class="title">Poverty Trends in Other Regions</div>
+          <div class="subtitle">Diverse Patterns Across Different Continents</div>
+        </div>
+
+        <div class="content">
+          <div class="chart-section">
+            <div class="card chart-container"><canvas id="povertyChart3"></canvas></div>
+          </div>
+
+          <div class="regions-grid">
+            <div class="card hoverlift region-card">
+              <div class="region-header"><i class="material-icons region-icon">public</i><div class="region-title">Sub-Saharan Africa</div></div>
+              <div class="year-range">2017 to 2019</div>
+              <div class="stat-value decrease">36.6% → 35%</div>
+              <div class="description">Modest decrease in poverty rate</div>
+              <div class="interactive-element"><i class="material-icons interactive-icon">trending_down</i><div class="interactive-text">1.6 percentage point decrease</div></div>
+              <div class="trend"><div class="trend-arrow" style="color:#388e3c;">↓</div><div class="trend-text">Still highest globally</div></div>
+            </div>
+
+            <div class="card hoverlift region-card">
+              <div class="region-header"><i class="material-icons region-icon">beach_access</i><div class="region-title">Latin America & Caribbean</div></div>
+              <div class="year-range">2017 to 2021</div>
+              <div class="stat-value increase">4.4% → 4.6%</div>
+              <div class="description">Slight increase in poverty rate</div>
+              <div class="interactive-element"><i class="material-icons interactive-icon">trending_up</i><div class="interactive-text">0.2 percentage point increase</div></div>
+              <div class="trend"><div class="trend-arrow" style="color:#d32f2f;">↑</div><div class="trend-text">Economic challenges</div></div>
+            </div>
+
+            <div class="card hoverlift region-card">
+              <div class="region-header"><i class="material-icons region-icon">account_balance</i><div class="region-title">Former Socialist Countries</div></div>
+              <div class="year-range">Russia (2000)</div>
+              <div class="stat-value neutral">3%</div>
+              <div class="description">Poverty rate after economic transition</div>
+              <div class="interactive-element"><i class="material-icons interactive-icon">info</i><div class="interactive-text">Acknowledging poverty after reforms</div></div>
+              <div class="trend"><div class="trend-arrow" style="color:#f57c00;">→</div><div class="trend-text">Previously claimed no poverty</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built as a single-page site by merging three slides. Charts powered by Chart.js.
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* ================== SECTION 1 CHART ================== */
+      const ctx1 = document.getElementById('povertyChart1').getContext('2d');
+      new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019'],
+          datasets: [{
+            label: 'Global Poverty Rate (%)',
+            data: [16.27, 15.5, 14.8, 14.1, 13.4, 12.7, 12.0, 11.3, 10.2, 9.05],
+            backgroundColor: 'rgba(211, 47, 47, 0.2)',
+            borderColor: '#d32f2f',
+            borderWidth: 3,
+            pointBackgroundColor: '#d32f2f',
+            pointBorderColor: '#fff',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top', labels: { font: { size: 14, weight: 'bold' }, color: '#263238' } },
+            tooltip: { backgroundColor: 'rgba(38, 50, 56, 0.85)', padding: 10, borderColor: '#3949ab', borderWidth: 1 }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 20, ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } },
+            x: { ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } }
+          },
+          interaction: { mode: 'index', intersect: false }
+        }
+      });
+
+      // Hover effects for s1 stat boxes
+      document.querySelectorAll('#s1 .stat-box').forEach(box => {
+        box.addEventListener('mouseenter', () => box.style.backgroundColor = 'rgba(255,255,255,0.92)');
+        box.addEventListener('mouseleave', () => box.style.backgroundColor = 'rgba(255,255,255,0.82)');
+      });
+
+      document.getElementById('decreaseS1').addEventListener('click', function(){
+        alert('Global poverty decreased by 7.22 percentage points from 2010 to 2019!');
+      });
+
+      /* ================== SECTION 2 CHART ================== */
+      const ctx2 = document.getElementById('povertyChart2').getContext('2d');
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['China (2010)', 'China (2020)', 'SE Asia (2017)', 'SE Asia (2021)', 'South Asia (2017)', 'South Asia (2021)'],
+          datasets: [{
+            label: 'Poverty Rate (%)',
+            data: [10.2, 0.1, 7.8, 5.4, 13, 11],
+            backgroundColor: [
+              'rgba(46, 125, 50, 0.7)','rgba(27, 94, 32, 0.7)','rgba(56, 142, 60, 0.7)',
+              'rgba(38, 166, 91, 0.7)','rgba(76, 175, 80, 0.7)','rgba(102, 187, 106, 0.7)'
+            ],
+            borderColor: [
+              'rgba(27, 94, 32, 1)','rgba(13, 71, 17, 1)','rgba(33, 150, 83, 1)',
+              'rgba(24, 138, 67, 1)','rgba(46, 125, 50, 1)','rgba(61, 153, 57, 1)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top', labels: { font: { size: 14, weight: 'bold' }, color: '#263238' } },
+            tooltip: { backgroundColor: 'rgba(38,50,56,0.85)', padding: 10, borderColor: '#2e7d32', borderWidth: 1 }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 15, ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } },
+            x: { ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } }
+          },
+          interaction: { mode: 'index', intersect: false }
+        }
+      });
+
+      // Interactions for s2 cards
+      document.querySelectorAll('#s2 .region-card .interactive-element').forEach(el => {
+        el.addEventListener('click', function(){
+          const region = this.closest('.region-card').querySelector('.region-title').textContent.trim();
+          if (region === 'China') {
+            alert('China achieved a remarkable poverty reduction from ~10.2% to ~0.1% in one decade!');
+          } else if (region === 'Southeast Asia') {
+            alert('Southeast Asia reduced poverty through economic development and human capital investments.');
+          } else if (region === 'South Asia') {
+            alert('South Asia lifted ~26 million people out of poverty (13% → 11%).');
+          }
+        });
+      });
+
+      /* ================== SECTION 3 CHART ================== */
+      const ctx3 = document.getElementById('povertyChart3').getContext('2d');
+      new Chart(ctx3, {
+        type: 'line',
+        data: {
+          labels: ['2017','2018','2019','2020','2021'],
+          datasets: [
+            { label: 'Sub-Saharan Africa', data: [36.6, 35.8, 35, 34.5, 34.2], borderColor: '#d32f2f', backgroundColor: 'rgba(211,47,47,0.1)', borderWidth: 3, tension: 0.4, fill: true },
+            { label: 'Latin America & Caribbean', data: [4.4, 4.5, 4.5, 4.6, 4.6], borderColor: '#388e3c', backgroundColor: 'rgba(56,142,60,0.1)', borderWidth: 3, tension: 0.4, fill: true },
+            { label: 'Former Socialist Countries', data: [3,3,3,3,3], borderColor: '#f57c00', backgroundColor: 'rgba(245,124,0,0.1)', borderWidth: 3, tension: 0.4, fill: true }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top', labels: { font: { size: 14, weight: 'bold' }, color: '#263238' } },
+            tooltip: { backgroundColor: 'rgba(38,50,56,0.85)', padding: 10, borderColor: '#e65100', borderWidth: 1 }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 40, ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } },
+            x: { ticks: { font: { size: 12 }, color: '#263238' }, grid: { color: 'rgba(38,50,56,0.1)' } }
+          },
+          interaction: { mode: 'index', intersect: false }
+        }
+      });
+
+      // Interactions for s3 cards
+      document.querySelectorAll('#s3 .region-card .interactive-element').forEach(el => {
+        el.addEventListener('click', function(){
+          const region = this.closest('.region-card').querySelector('.region-title').textContent.trim();
+          if (region === 'Sub-Saharan Africa') {
+            alert('Sub-Saharan Africa remains the highest poverty region despite a modest decline (36.6% → 35%).');
+          } else if (region === 'Latin America & Caribbean') {
+            alert('Latin America & Caribbean saw a slight rise (4.4% → 4.6%), reflecting economic headwinds.');
+          } else if (region === 'Former Socialist Countries') {
+            alert('Some former socialist countries acknowledged poverty (~3%) post-transition despite earlier claims of none.');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
